@@ -104,7 +104,7 @@ class ApiService {
           'price': price.toString(), // Convert to String
         },
       );
-
+      print("Print dari rent locker: ${response.body}");
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {

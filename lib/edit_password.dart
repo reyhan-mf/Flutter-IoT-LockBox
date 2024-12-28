@@ -51,7 +51,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Password changed successfully'),
+            content: Text('Passwords changed successfully'),
             backgroundColor: Colors.green,
           ),
         );

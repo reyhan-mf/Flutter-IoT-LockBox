@@ -4,7 +4,6 @@ import 'package:lockboxx/model/locker_model.dart';
 import 'package:lockboxx/model/rental_controller.dart';
 import 'package:lockboxx/model/user_model.dart';
 import 'package:lockboxx/navigation.dart';
-import 'package:lockboxx/rent.dart';
 import 'package:lockboxx/theme.dart';
 
 class HomePage extends StatelessWidget {
@@ -321,7 +320,10 @@ class HomePage extends StatelessWidget {
                                                 Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        MainPage(user: user, index: 1,),
+                                                        MainPage(
+                                                      user: user,
+                                                      index: 1,
+                                                    ),
                                                   ),
                                                 );
                                                 print(
@@ -340,14 +342,49 @@ class HomePage extends StatelessWidget {
                                               }
                                             } else if (user.membershipType ==
                                                 "PREMIUM") {
-                                              Navigator.pop(context);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Durasi $selectedDuration jam untuk Locker ${locker.lockerId} harga: ${selectedDuration * premiumPrice} (PREMIUM) '),
-                                                ),
-                                              );
+                                              final rent =
+                                                  await rentalController
+                                                      .rentLocker(
+                                                          lockerId:
+                                                              locker.lockerId,
+                                                          userId: user.userId,
+                                                          durationTime:
+                                                              selectedDuration,
+                                                          price:
+                                                              selectedDuration *
+                                                                  basicPrice);
+                                              if (rent['success'] == true) {
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Berhasil! Durasi $selectedDuration jam untuk Locker ${locker.lockerId} harga ${selectedDuration * basicPrice} (BASIC) '),
+                                                  ),
+                                                );
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MainPage(
+                                                      user: user,
+                                                      index: 1,
+                                                    ),
+                                                  ),
+                                                );
+                                                print(
+                                                    'Print dari home.dart data dari api rent: $rent');
+                                              } else {
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    backgroundColor: Colors.red,
+                                                    content: Text('Gagal!   '),
+                                                  ),
+                                                );
+                                                print(
+                                                    'Print dari home.dart data dari api rent: $rent');
+                                              }
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
